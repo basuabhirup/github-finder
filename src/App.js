@@ -13,6 +13,7 @@ class App extends Component {
 	state = {
 		users: [],
 		user: {},
+		userRepos: [],
 		loading: false,
 		alert: null,
 	};
@@ -35,6 +36,15 @@ class App extends Component {
 			.then(res => this.setState({ user: res.data, loading: false }));
 	};
 
+	getUserRepos = username => {
+		this.setState({ laoding: true });
+		axios
+			.get(
+				`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+			)
+			.then(res => this.setState({ userRepos: res.data, loading: false }));
+	};
+
 	clearUsers = () => this.setState({ users: [], loading: false });
 
 	setAlert = (msg, type) => {
@@ -43,7 +53,7 @@ class App extends Component {
 	};
 
 	render() {
-		const { users, user, loading } = this.state;
+		const { users, user, userRepos, loading } = this.state;
 
 		return (
 			<Router>
@@ -72,7 +82,13 @@ class App extends Component {
 								exact
 								path="/user/:username"
 								element={
-									<User user={user} getUser={this.getUser} loading={loading} />
+									<User
+										user={user}
+										userRepos={userRepos}
+										getUser={this.getUser}
+										getUserRepos={this.getUserRepos}
+										loading={loading}
+									/>
 								}
 							/>
 						</Routes>

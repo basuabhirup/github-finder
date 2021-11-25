@@ -1,13 +1,15 @@
-import React, { Component, Fragment, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import UserRepos from "../repos/UserRepos";
 import Spinner from "../layout/Spinner";
 import PropTypes from "prop-types";
 
-function User({ user, loading, getUser }) {
+function User({ user, userRepos, loading, getUser, getUserRepos }) {
 	let { username } = useParams();
 
 	useEffect(() => {
 		getUser(username);
+		getUserRepos(username);
 	}, []);
 
 	const {
@@ -103,14 +105,17 @@ function User({ user, loading, getUser }) {
 				<div className="badge badge-dark">Public Repos: {public_repos}</div>
 				<div className="badge badge-light">Public Gists: {public_gists}</div>
 			</div>
+			<UserRepos userRepos={userRepos} />
 		</Fragment>
 	);
 }
 
 User.propTypes = {
 	user: PropTypes.object,
+	userRepos: PropTypes.array.isRequired,
 	loading: PropTypes.bool.isRequired,
 	getUser: PropTypes.func.isRequired,
+	getUserRepos: PropTypes.func.isRequired,
 };
 
 export default User;
